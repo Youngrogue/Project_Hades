@@ -1,0 +1,326 @@
+[
+  {
+    "id": "learning-1",
+    "category": "learning",
+    "label": "School subjects",
+    "phosphor_regular": "graduation-cap"
+  },
+  {
+    "id": "learning-2",
+    "category": "learning",
+    "label": "General knowledge",
+    "phosphor_regular": "brain"
+  },
+  {
+    "id": "learning-3",
+    "category": "learning",
+    "label": "Courses & tutorials",
+    "phosphor_regular": "play-circle"
+  },
+  {
+    "id": "learning-4",
+    "category": "learning",
+    "label": "Coding & technology learning",
+    "phosphor_regular": "code"
+  },
+  {
+    "id": "learning-5",
+    "category": "learning",
+    "label": "Books, libraries & research",
+    "phosphor_regular": "books"
+  },
+  {
+    "id": "learning-6",
+    "category": "learning",
+    "label": "Study tools",
+    "phosphor_regular": "notebook"
+  },
+  {
+    "id": "design-1",
+    "category": "design",
+    "label": "Inspiration",
+    "phosphor_regular": "lightbulb"
+  },
+  {
+    "id": "design-2",
+    "category": "design",
+    "label": "UI & UX",
+    "phosphor_regular": "layout"
+  },
+  {
+    "id": "design-3",
+    "category": "design",
+    "label": "Graphic design",
+    "phosphor_regular": "pen-nib"
+  },
+  {
+    "id": "design-4",
+    "category": "design",
+    "label": "Images & photography",
+    "phosphor_regular": "camera"
+  },
+  {
+    "id": "design-5",
+    "category": "design",
+    "label": "Icons, fonts & assets",
+    "phosphor_regular": "shapes"
+  },
+  {
+    "id": "design-6",
+    "category": "design",
+    "label": "3D & illustration",
+    "phosphor_regular": "cube"
+  },
+  {
+    "id": "coding-1",
+    "category": "coding",
+    "label": "App & website builders",
+    "phosphor_regular": "browser"
+  },
+  {
+    "id": "coding-2",
+    "category": "coding",
+    "label": "Editors & coding assistants",
+    "phosphor_regular": "terminal-window"
+  },
+  {
+    "id": "coding-3",
+    "category": "coding",
+    "label": "Components & libraries",
+    "phosphor_regular": "puzzle-piece"
+  },
+  {
+    "id": "coding-4",
+    "category": "coding",
+    "label": "APIs & developer tools",
+    "phosphor_regular": "plugs-connected"
+  },
+  {
+    "id": "coding-5",
+    "category": "coding",
+    "label": "Hosting & infrastructure",
+    "phosphor_regular": "cloud"
+  },
+  {
+    "id": "coding-6",
+    "category": "coding",
+    "label": "Agent skills",
+    "phosphor_regular": "robot"
+  },
+  {
+    "id": "coding-7",
+    "category": "coding",
+    "label": "Learning resources",
+    "phosphor_regular": "book-open"
+  },
+  {
+    "id": "audio-1",
+    "category": "audio",
+    "label": "Listening & discovery",
+    "phosphor_regular": "headphones"
+  },
+  {
+    "id": "audio-2",
+    "category": "audio",
+    "label": "DJing & libraries",
+    "phosphor_regular": "vinyl-record"
+  },
+  {
+    "id": "audio-3",
+    "category": "audio",
+    "label": "Music production",
+    "phosphor_regular": "piano-keys"
+  },
+  {
+    "id": "audio-4",
+    "category": "audio",
+    "label": "Audio editing & conversion",
+    "phosphor_regular": "waveform"
+  },
+  {
+    "id": "audio-5",
+    "category": "audio",
+    "label": "Voice & transcription",
+    "phosphor_regular": "microphone"
+  },
+  {
+    "id": "audio-6",
+    "category": "audio",
+    "label": "Music learning",
+    "phosphor_regular": "music-notes"
+  },
+  {
+    "id": "video-1",
+    "category": "video",
+    "label": "Watching & discovery",
+    "phosphor_regular": "play-circle"
+  },
+  {
+    "id": "video-2",
+    "category": "video",
+    "label": "Film & TV guides",
+    "phosphor_regular": "film-slate"
+  },
+  {
+    "id": "video-3",
+    "category": "video",
+    "label": "Video creation & editing",
+    "phosphor_regular": "video-camera"
+  },
+  {
+    "id": "video-4",
+    "category": "video",
+    "label": "Recording & streaming",
+    "phosphor_regular": "broadcast"
+  },
+  {
+    "id": "video-5",
+    "category": "video",
+    "label": "Footage & assets",
+    "phosphor_regular": "film-strip"
+  },
+  {
+    "id": "productivity-1",
+    "category": "productivity",
+    "label": "Notes & documents",
+    "phosphor_regular": "note-pencil"
+  },
+  {
+    "id": "productivity-2",
+    "category": "productivity",
+    "label": "Writing & communication",
+    "phosphor_regular": "chat-circle-text"
+  },
+  {
+    "id": "productivity-3",
+    "category": "productivity",
+    "label": "Planning & collaboration",
+    "phosphor_regular": "calendar-check"
+  },
+  {
+    "id": "productivity-4",
+    "category": "productivity",
+    "label": "Marketing & business",
+    "phosphor_regular": "chart-line-up"
+  },
+  {
+    "id": "productivity-5",
+    "category": "productivity",
+    "label": "General AI assistants & automation",
+    "phosphor_regular": "robot"
+  },
+  {
+    "id": "utilities-1",
+    "category": "utilities",
+    "label": "Files & PDFs",
+    "phosphor_regular": "files"
+  },
+  {
+    "id": "utilities-2",
+    "category": "utilities",
+    "label": "General conversion & downloads",
+    "phosphor_regular": "arrows-clockwise"
+  },
+  {
+    "id": "utilities-3",
+    "category": "utilities",
+    "label": "Privacy & security",
+    "phosphor_regular": "shield-check"
+  },
+  {
+    "id": "utilities-4",
+    "category": "utilities",
+    "label": "Web tools & archives",
+    "phosphor_regular": "globe"
+  },
+  {
+    "id": "utilities-5",
+    "category": "utilities",
+    "label": "Tool discovery",
+    "phosphor_regular": "magnifying-glass"
+  },
+  {
+    "id": "careers-1",
+    "category": "careers",
+    "label": "Jobs & remote work",
+    "phosphor_regular": "briefcase"
+  },
+  {
+    "id": "careers-2",
+    "category": "careers",
+    "label": "Freelancing",
+    "phosphor_regular": "handshake"
+  },
+  {
+    "id": "careers-3",
+    "category": "careers",
+    "label": "Expert projects",
+    "phosphor_regular": "medal"
+  },
+  {
+    "id": "careers-4",
+    "category": "careers",
+    "label": "Career preparation",
+    "phosphor_regular": "identification-card"
+  },
+  {
+    "id": "life-1",
+    "category": "life",
+    "label": "Food & cooking",
+    "phosphor_regular": "cooking-pot"
+  },
+  {
+    "id": "life-2",
+    "category": "life",
+    "label": "Home & DIY",
+    "phosphor_regular": "house"
+  },
+  {
+    "id": "life-3",
+    "category": "life",
+    "label": "Shopping & wishlists",
+    "phosphor_regular": "shopping-bag"
+  },
+  {
+    "id": "life-4",
+    "category": "life",
+    "label": "Travel",
+    "phosphor_regular": "airplane"
+  },
+  {
+    "id": "life-5",
+    "category": "life",
+    "label": "Personal finance",
+    "phosphor_regular": "wallet"
+  },
+  {
+    "id": "life-6",
+    "category": "life",
+    "label": "Public services & environment",
+    "phosphor_regular": "leaf"
+  },
+  {
+    "id": "explore-1",
+    "category": "explore",
+    "label": "Games & puzzles",
+    "phosphor_regular": "game-controller"
+  },
+  {
+    "id": "explore-2",
+    "category": "explore",
+    "label": "Interactive maps & experiences",
+    "phosphor_regular": "map-trifold"
+  },
+  {
+    "id": "explore-3",
+    "category": "explore",
+    "label": "Space & nature exploration",
+    "phosphor_regular": "planet"
+  },
+  {
+    "id": "explore-4",
+    "category": "explore",
+    "label": "Art, culture & curiosities",
+    "phosphor_regular": "palette"
+  }
+]

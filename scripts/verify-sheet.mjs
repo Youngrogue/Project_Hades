@@ -1,0 +1,12 @@
+import fs from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {publicCatalogue,catalogueFromSheet} from '../lib/catalogue.mjs';
+const readbackPath=process.argv[2];
+if(!readbackPath)throw new Error('Pass the path to the connector sheet readback JSON.');
+const ranges=JSON.parse(await fs.readFile(readbackPath,'utf8'));
+const actual=publicCatalogue(catalogueFromSheet(ranges.slice(0,3)));
+const expected=publicCatalogue(JSON.parse(await fs.readFile(new URL('../data/catalogue.json',import.meta.url),'utf8')));
+const sorted=items=>items.sort((a,b)=>a.id.localeCompare(b.id));
+assert.deepEqual(sorted(actual.resources),sorted(expected.resources));
+assert.deepEqual(actual.categories,expected.categories);assert.deepEqual(actual.placements,expected.placements);
+console.log(`Google Sheet readback verified: ${actual.resources.length} published resources; ${actual.categories.length} subcategories.`);
