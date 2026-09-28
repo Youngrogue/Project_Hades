@@ -156,12 +156,24 @@ main:focus { outline: none; }
 .rail-stop.is-here { color: var(--ink); font-weight: 700; }
 .rail-stop.is-here .stop { background: var(--line); transform: scale(1.25); }
 .rail-stop .stop { transition: transform .25s var(--ease-out), background-color .15s; }
-.surprise { display: flex; align-items: center; flex-wrap: wrap; gap: 2px 8px; }
-.surprise--rail { margin-top: 16px; }
-.surprise .text-button { color: var(--muted); margin-left: -12px; }
-.surprise .text-button:hover { color: var(--ink); }
-.surprise .text-button:disabled { opacity: .5; cursor: not-allowed; background: none; }
-.surprise-note { font-size: .8125rem; color: var(--muted); }
+/* Find something unexpected: above the search, with its own category choice (independent of browsing filters).
+   Needs JavaScript, so it is hidden without it. "in" and the dropdown wrap together onto a second line when narrow. */
+html:not(.js) .discover { display: none; }
+.discover { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 6px; margin: 0 0 6px -12px; }
+.discover-button { color: var(--muted); }
+.discover-button:hover { color: var(--ink); }
+.discover-button:disabled { opacity: .5; cursor: not-allowed; background: none; }
+.discover-scope { display: inline-flex; align-items: center; gap: 8px; margin-left: 0; }
+.discover-in { font-size: .9375rem; font-weight: 600; color: var(--muted); }
+.select-wrap { position: relative; display: inline-flex; }
+.select-wrap::after { content: ""; position: absolute; right: 14px; top: 50%; width: 7px; height: 7px; margin-top: -6px; border: solid var(--muted); border-width: 0 2px 2px 0; transform: rotate(45deg); pointer-events: none; }
+.discover-select { appearance: none; -webkit-appearance: none; min-height: 44px; max-width: 100%; padding: 2px 38px 0 14px; border: 0; border-radius: 10px; background: var(--panel); color: var(--ink); font: 600 .9375rem/1.2 var(--sans); box-shadow: inset 0 0 0 1.5px var(--rule-strong); cursor: pointer; transition: box-shadow .15s; }
+.discover-select:hover { box-shadow: inset 0 0 0 1.5px var(--ink); }
+.discover-select:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.discover-select option { background: var(--panel); color: var(--ink); }
+.surprise-note { font-size: .8125rem; color: var(--muted); padding-left: 12px; }
+.surprise-note:empty { display: none; }
+@media (max-width: 700px) { .discover-scope { padding-left: 12px; } }
 
 /* Search: stays reachable while a long subject scrolls */
 .search { position: sticky; top: 0; z-index: 6; display: flex; align-items: center; gap: 8px; height: var(--search-h); background: var(--ground); }
@@ -177,16 +189,11 @@ main:focus { outline: none; }
 .search-field:focus-within .search-key, .search-clear:not([hidden]) + .search-key { display: none; }
 @media (pointer: coarse), (max-width: 700px) { .search-key { display: none; } }
 
-/* Toolbar under the search: Suggest a tool and, below 1024px, Find something unexpected */
+/* Toolbar under the search: Suggest a tool */
 .toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0 16px; min-height: 44px; padding-top: 2px; font-size: .875rem; color: var(--muted); }
 @media (max-width: 700px) { .toolbar { font-size: .8125rem; } }
 .toolbar-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 0 8px; margin-left: auto; margin-right: -12px; }
-@media (min-width: 1024px) { .surprise--toolbar { display: none; } }
-@media (max-width: 1023px) {
-  /* Both toolbar actions share one left edge whether they sit on one line or wrap onto two. */
-  .toolbar-actions { margin-left: -12px; margin-right: -12px; width: calc(100% + 24px); }
-  .surprise--toolbar .text-button { margin-left: 0; }
-}
+@media (max-width: 1023px) { .toolbar-actions { margin-left: -12px; margin-right: -12px; width: calc(100% + 24px); } }
 .suggest-link { color: var(--muted); }
 .suggest-link:hover { color: var(--ink); }
 .icon-trailing { width: 14px; height: 14px; margin-left: -2px; }
@@ -322,7 +329,12 @@ dialog::backdrop { background: var(--scrim); }
 .preview::backdrop { background: color-mix(in srgb, var(--scrim) 45%, transparent); }
 .dialog-close { position: absolute; top: 12px; right: 12px; }
 .sheet-grip { display: none; }
-.preview { position: fixed; width: min(420px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); margin: auto; overflow: auto; overscroll-behavior: contain; padding: 24px; border-radius: 16px; box-shadow: var(--shadow); }
+.preview { position: fixed; width: min(420px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); margin: auto; overflow: hidden; padding: 0; border-radius: 16px; box-shadow: var(--shadow); }
+/* The dialog box never exceeds the viewport; its content scrolls inside, under a close button that stays put. */
+.preview[open] { display: flex; flex-direction: column; }
+#preview-content { flex: 1 1 auto; min-height: 0; overflow: auto; overscroll-behavior: contain; padding: 24px; }
+.preview .dialog-close { z-index: 1; background: var(--panel); }
+.preview .dialog-close:hover { background: color-mix(in srgb, var(--ink) 8%, var(--panel)); }
 .preview[data-anchored] { margin: 0; }
 .preview-id { display: flex; align-items: center; gap: 14px; padding-right: 44px; }
 .tile--lg { width: 52px; height: 52px; border-radius: 12px; font-size: 1.375rem; }
@@ -400,7 +412,8 @@ dialog::backdrop { background: var(--scrim); }
   .terminus { left: 0; }
   .row-link { gap: 12px; }
   .empty { padding: 24px 20px; }
-  .preview { inset: auto 0 0 0; width: 100%; max-width: 100%; max-height: 88dvh; margin: 0; padding: 28px 20px max(20px, env(safe-area-inset-bottom)); border-radius: 20px 20px 0 0; border-width: 1px 0 0; }
+  .preview { inset: auto 0 0 0; width: 100%; max-width: 100%; max-height: 88dvh; margin: 0; padding: 0; border-radius: 20px 20px 0 0; border-width: 1px 0 0; }
+  #preview-content { padding: 28px 20px max(20px, env(safe-area-inset-bottom)); }
   .preview[data-anchored] { margin: 0; }
   .preview::backdrop { background: var(--scrim); }
   .sheet-grip { display: block; position: absolute; top: 8px; left: 50%; width: 40px; height: 5px; margin-left: -20px; border-radius: 3px; background: var(--rule-strong); }

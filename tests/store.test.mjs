@@ -36,7 +36,7 @@ test('the bundled fallback is the validated public catalogue of the current seed
   const {generated_at, ...data} = fallbackFile;
   assert.match(generated_at, /^\d{4}-\d{2}-\d{2}$/);
   assert.deepEqual(data, publicCatalogue(seed), 'run `npm run build:fallback` after editing data/catalogue.json');
-  assert.equal(data.resources.length, 721);
+  assert.equal(data.resources.length, 723);
   const allowed = ['id', 'name', 'url', 'description', 'primary_placement', 'best_for', 'logo_url', 'cost', 'audience', 'level', 'tags', 'sort_order', 'suggested_by'];
   for (const r of data.resources) for (const key of Object.keys(r)) assert.ok(allowed.includes(key), `unexpected public field ${key}`);
   const text = JSON.stringify(fallbackFile);
@@ -60,7 +60,7 @@ test('start-up serves the bundled catalogue at once while the Sheet is still bei
   const pending = [];
   prepare(p => pending.push(p));
   assert.equal(pending.length, 1, 'the first request starts a Sheet check');
-  assert.equal(store.getPublic().resources.length, 721, 'without waiting for it');
+  assert.equal(store.getPublic().resources.length, 723, 'without waiting for it');
   assert.equal(store.getPublic().meta.source, 'bundled');
   assert.equal(store.getPublic().meta.bundled_at, fallbackFile.generated_at);
   release(edited('From the Sheet')); assert.equal(await pending[0], true);
@@ -115,22 +115,34 @@ test('an intentional empty publication stays empty and is not treated as an outa
   assert.equal(JSON.parse((await request(handler, '/api/catalogue')).body).resources.length, 0);
 });
 
-test('refreshes coalesce, follow the five-minute interval and retry a failing Sheet about once a minute', async () => {
-  let clock = Date.UTC(2026, 8, 27), reads = 0, fail = false;
+test('refreshes coalesce, follow the six-hour default interval and retry a failing Sheet about once a minute', async () => {
+  let clock = Date.UTC(2026, 8, 28), reads = 0, fail = false;
+  const HOUR = 3600e3;
   const store = new CatalogueStore({bundled: fallbackFile, readSource: async () => { reads++; if (fail) throw new Error('quota'); return seed; }, now: () => clock, log: quiet});
   const prepare = requestRefresh(store, {now: () => clock});
   const pending = [];
   const tick = async () => { prepare(p => pending.push(p)); await Promise.all(pending.splice(0)); };
+  await tick();
+  assert.equal(reads, 1, 'a new instance reads the Sheet on its first request');
   await Promise.all([store.refresh(), store.refresh(), store.refresh()]);
-  assert.equal(reads, 1, 'concurrent refreshes share one Sheet read');
-  prepare(p => pending.push(p)); prepare(p => pending.push(p)); await Promise.all(pending.splice(0));
-  assert.equal(reads, 1, 'fresh data is not re-read');
-  clock += 299000; await tick(); assert.equal(reads, 1);
-  clock += 2000; await tick(); assert.equal(reads, 2, 'checked again after five minutes');
-  fail = true; clock += 300001; await tick(); assert.equal(reads, 3);
-  clock += 30000; await tick(); assert.equal(reads, 3, 'no retry storm while failing');
-  clock += 31000; await tick(); assert.equal(reads, 4, 'retried after a minute');
-  assert.equal(store.getPublic().resources.length, 721);
+  assert.equal(reads, 2, 'concurrent refreshes share one Sheet read');
+  for (const step of [5 * 60e3, HOUR, 4 * HOUR]) { clock += step; await tick(); }
+  assert.equal(reads, 2, 'no re-read within six hours of a successful one');
+  clock = store.verifiedAt + 6 * HOUR; await tick(); assert.equal(reads, 3, 'checked again after six hours, on the next request');
+  fail = true; clock += 6 * HOUR; await tick(); assert.equal(reads, 4);
+  clock += 30e3; await tick(); assert.equal(reads, 4, 'no retry storm while failing');
+  clock += 31e3; await tick(); assert.equal(reads, 5, 'a failed read is retried after about a minute, not six hours');
+  fail = false; clock += 61e3; await tick(); assert.equal(reads, 6);
+  clock += 2 * HOUR; await tick(); assert.equal(reads, 6, 'back on the six-hour interval after recovery');
+  assert.equal(store.getPublic().resources.length, 723);
+});
+
+test('REFRESH_SECONDS: six hours by default, overridable, at least a minute', () => {
+  assert.equal(siteEnvironment({}).refreshMs, 21600e3);
+  assert.equal(siteEnvironment({REFRESH_SECONDS: '21600'}).refreshMs, 21600e3);
+  assert.equal(siteEnvironment({REFRESH_SECONDS: '600'}).refreshMs, 600e3);
+  assert.equal(siteEnvironment({REFRESH_SECONDS: '5'}).refreshMs, 60e3);
+  assert.equal(siteEnvironment({REFRESH_SECONDS: 'soon'}).refreshMs, 21600e3);
 });
 
 test('no Google connection: the bundled library is served with a private diagnostic, and nothing is written to disk', async () => {
@@ -146,7 +158,7 @@ test('no Google connection: the bundled library is served with a private diagnos
     assert.match(log.errors.join('\n'), /GOOGLE_SHEET_ID is not set/);
     const page = await request(missing.handler, '/', {host: 'tools.soralives.xyz'});
     assert.equal(page.status, 200);
-    assert.ok(page.body.includes('Codex') && page.body.includes('Search 721 websites'));
+    assert.ok(page.body.includes('Codex') && page.body.includes('Search 723 websites'));
     // A broken key surfaces as a failed refresh with a generic message that never quotes the key.
     const badKey = await createRuntime({root: temp, env: {GOOGLE_SHEET_ID: 'sheet-id', GOOGLE_SERVICE_ACCOUNT_JSON: '{"private_key": "SECRET-KEY-MATERIAL'}, log});
     assert.equal(await badKey.store.refresh(), false);

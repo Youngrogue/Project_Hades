@@ -1,7 +1,7 @@
 {
-  "source": "useful-websites-master-v37.md + Bolaji uses intake + Details (2026-09-25)",
-  "source_count": 773,
-  "resource_count": 760,
+  "source": "useful-websites-master-v37.md + Bolaji uses intake + Details (2026-09-25) + owner additions (2026-09-28)",
+  "source_count": 778,
+  "resource_count": 762,
   "entries": [
     {
       "source_number": 1,
@@ -7043,6 +7043,56 @@
       "source_section": "Owner addition - design inspiration (2026-09-25)",
       "source_url": "https://www.details.so/inspo",
       "resource_id": "h-d9be31c93a",
+      "action": "retained"
+    },
+    {
+      "source_number": 741,
+      "name": "Design Engineer Tools",
+      "url": "https://designengineer.tools/",
+      "description": "A categorised list of tools for web-focused design engineers, covering inspiration, UI components, AI code generation, fonts, motion, 3D and more.",
+      "source_section": "Owner addition (2026-09-28)",
+      "source_url": "https://designengineer.tools/",
+      "resource_id": "h-e27f7d4b1e",
+      "action": "merged"
+    },
+    {
+      "source_number": 742,
+      "name": "Early.tools",
+      "url": "https://www.early.tools/",
+      "description": "A daily, human-curated showcase of pre-launch and early-stage startups across AI, design, developer tools, productivity and more.",
+      "source_section": "Owner addition (2026-09-28)",
+      "source_url": "https://www.early.tools/",
+      "resource_id": "h-4fd07c04a0",
+      "action": "merged"
+    },
+    {
+      "source_number": 743,
+      "name": "Lumosity",
+      "url": "https://www.lumosity.com/en/",
+      "description": "A brain-training app of short daily games built around memory, attention, flexibility and problem-solving, with difficulty that adapts as you play.",
+      "source_section": "Owner addition (2026-09-28)",
+      "source_url": "https://www.lumosity.com/en/",
+      "resource_id": "h-b26048c599",
+      "action": "retained"
+    },
+    {
+      "source_number": 744,
+      "name": "Duolingo",
+      "url": "https://www.duolingo.com/",
+      "description": "Bite-sized, game-like language lessons covering reading, writing, listening and speaking, on the web and in iOS and Android apps.",
+      "source_section": "Owner addition (2026-09-28)",
+      "source_url": "http://duolingo.com/",
+      "resource_id": "h-599401c077",
+      "action": "merged"
+    },
+    {
+      "source_number": 745,
+      "name": "Mastra",
+      "url": "https://mastra.ai/",
+      "description": "An open-source TypeScript framework for building AI agents and workflows, with memory, evaluations, tracing and deployment tooling.",
+      "source_section": "Owner addition (2026-09-28)",
+      "source_url": "https://mastra.ai/",
+      "resource_id": "h-c985249d6a",
       "action": "retained"
     }
   ]
