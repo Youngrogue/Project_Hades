@@ -12667,24 +12667,27 @@
     {
       "id": "h-4fd07c04a0",
       "name": "Early.tools",
-      "url": "https://early.tools/",
-      "description": "Human-curated directory for discovering pre-launch and early-stage startups, developer tools, AI products, and creative software.",
-      "primary_placement": "design-1",
-      "best_for": "",
+      "url": "https://www.early.tools/",
+      "description": "A daily, human-curated showcase of pre-launch and early-stage startups across AI, design, developer tools, productivity and more.",
+      "primary_placement": "utilities-5",
+      "best_for": "Discovering new products before they launch widely.",
       "logo_url": "",
       "cost": "Unknown",
       "audience": "General",
       "level": "Not specified",
-      "tags": "",
+      "tags": "startups; product discovery; early access; new tools",
       "status": "Published",
       "sort_order": 0,
-      "last_verified": "",
-      "review_status": "Imported",
-      "editorial_notes": "Imported description; current availability and access not rechecked.",
+      "last_verified": "2026-09-28",
+      "review_status": "Verified",
+      "editorial_notes": "Imported record rechecked at owner request 2026-09-28 against https://www.early.tools/ (https://early.tools/ redirects there; canonical is www). Moved from Design & Visuals / Inspiration to Internet & Digital Utilities / Tool discovery because it lists startups across many subjects. Deals and prices shown for listed products vary and were not audited.",
       "source_entries": [
-        "534"
+        "534",
+        "742"
       ],
-      "alternate_urls": []
+      "alternate_urls": [
+        "https://early.tools/"
+      ]
     },
     {
       "id": "h-7849f05b84",
@@ -14340,23 +14343,26 @@
       "id": "h-599401c077",
       "name": "Duolingo",
       "url": "https://www.duolingo.com/",
-      "description": "Gamified language-learning lessons with free and paid options.",
-      "primary_placement": "learning-2",
-      "best_for": "",
+      "description": "Bite-sized, game-like language lessons covering reading, writing, listening and speaking, on the web and in iOS and Android apps.",
+      "primary_placement": "learning-3",
+      "best_for": "Building a daily language-learning habit.",
       "logo_url": "",
-      "cost": "Unknown",
+      "cost": "Freemium",
       "audience": "General",
       "level": "Not specified",
-      "tags": "",
+      "tags": "languages; language learning; iOS; Android",
       "status": "Published",
       "sort_order": 0,
-      "last_verified": "",
-      "review_status": "Imported",
-      "editorial_notes": "Imported description; current availability and access not rechecked.",
+      "last_verified": "2026-09-28",
+      "review_status": "Verified",
+      "editorial_notes": "Imported record rechecked at owner request 2026-09-28 against https://www.duolingo.com/ (the submitted http://duolingo.com/ redirects there). The page states free learning with a paid trial offer, hence Freemium. Moved from Learning & Knowledge / General knowledge to Courses & tutorials. No hands-on testing.",
       "source_entries": [
-        "610"
+        "610",
+        "744"
       ],
-      "alternate_urls": []
+      "alternate_urls": [
+        "http://duolingo.com/"
+      ]
     },
     {
       "id": "h-010baf0f5e",
@@ -15860,21 +15866,22 @@
       "id": "h-e27f7d4b1e",
       "name": "Design Engineer Tools",
       "url": "https://designengineer.tools/",
-      "description": "A compact, categorized directory of tools for web-focused design engineers.",
+      "description": "A categorised list of tools for web-focused design engineers, covering inspiration, UI components, AI code generation, fonts, motion, 3D and more.",
       "primary_placement": "design-1",
-      "best_for": "",
+      "best_for": "Finding specialist design and front-end tools in one place.",
       "logo_url": "",
       "cost": "Unknown",
       "audience": "General",
       "level": "Not specified",
-      "tags": "",
+      "tags": "design engineering; tools directory; UI; motion; fonts",
       "status": "Published",
       "sort_order": 0,
-      "last_verified": "",
-      "review_status": "Imported",
-      "editorial_notes": "Imported description; current availability and access not rechecked.",
+      "last_verified": "2026-09-28",
+      "review_status": "Verified",
+      "editorial_notes": "Imported record rechecked at owner request 2026-09-28 against https://designengineer.tools/ (curated by James Warner). Kept in Design & Visuals / Inspiration; also listed in Internet & Digital Utilities / Tool discovery. No hands-on testing or pricing audit.",
       "source_entries": [
-        "679"
+        "679",
+        "741"
       ],
       "alternate_urls": []
     },
@@ -17240,6 +17247,50 @@
         "740"
       ],
       "alternate_urls": []
+    },
+    {
+      "id": "h-b26048c599",
+      "name": "Lumosity",
+      "url": "https://www.lumosity.com/en/",
+      "description": "A brain-training app of short daily games built around memory, attention, flexibility and problem-solving, with difficulty that adapts as you play.",
+      "primary_placement": "explore-1",
+      "best_for": "A few minutes of puzzle-style games each day, on the web or a phone.",
+      "logo_url": "",
+      "cost": "Unknown",
+      "audience": "General",
+      "level": "Not specified",
+      "tags": "brain training; puzzles; memory; iOS; Android",
+      "status": "Published",
+      "sort_order": 0,
+      "last_verified": "2026-09-28",
+      "review_status": "Verified",
+      "editorial_notes": "Added at owner request 2026-09-28. Description checked against https://www.lumosity.com/en/. The site's cognitive-benefit claims are the company's own and are not repeated here. No hands-on testing or pricing audit.",
+      "source_entries": [
+        "743"
+      ],
+      "alternate_urls": []
+    },
+    {
+      "id": "h-c985249d6a",
+      "name": "Mastra",
+      "url": "https://mastra.ai/",
+      "description": "An open-source TypeScript framework for building AI agents and workflows, with memory, evaluations, tracing and deployment tooling.",
+      "primary_placement": "coding-4",
+      "best_for": "TypeScript developers building, testing and running AI agents.",
+      "logo_url": "",
+      "cost": "Unknown",
+      "audience": "General",
+      "level": "Not specified",
+      "tags": "AI agents; TypeScript; open source; framework; workflows",
+      "status": "Published",
+      "sort_order": 0,
+      "last_verified": "2026-09-28",
+      "review_status": "Verified",
+      "editorial_notes": "Added at owner request 2026-09-28. Description checked against https://mastra.ai/: core framework Apache-2.0; enterprise features under a separate licence. Hosted pricing not audited. No hands-on testing.",
+      "source_entries": [
+        "745"
+      ],
+      "alternate_urls": []
     }
   ],
   "placements": [
@@ -17682,6 +17733,10 @@
     {
       "resource_id": "h-34dd482cd0",
       "placement_id": "coding-7"
+    },
+    {
+      "resource_id": "h-e27f7d4b1e",
+      "placement_id": "utilities-5"
     }
   ]
 }

@@ -4,7 +4,8 @@ import {fileURLToPath} from 'node:url';
 import {createRuntime} from './lib/runtime.mjs';
 
 // Local server. Without GOOGLE_SHEET_ID it serves the bundled catalogue (data/fallback-catalogue.json); with it, the
-// Sheet is checked on start and then about every five minutes while requests arrive, exactly as on Vercel.
+// Sheet is read on start and then when requests arrive and the last good read is older than REFRESH_SECONDS
+// (six hours by default), exactly as on Vercel.
 const root = path.dirname(fileURLToPath(import.meta.url));
 const {site, store, handler, prepare} = await createRuntime({root});
 const background = pending => void pending.then(ok => { if (ok) console.log(`Google Sheet read: ${store.getPublic().resources.length} published resources.`); });

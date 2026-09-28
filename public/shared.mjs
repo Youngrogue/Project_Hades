@@ -80,6 +80,23 @@ export function selectResources(data, {category = '', subcategory = '', q = ''} 
 
 // Which section a resource belongs to inside one subject's All view: its primary placement when that is in the
 // subject, otherwise its earliest additional placement by the subject's section order.
+// Find something unexpected. Independent of search and browsing filters: '' draws from every Published resource;
+// a category id draws from resources listed in that category, as their home or as a cross-listing. Each resource
+// appears once however many placements it has, so cross-listing never raises its chance of being picked.
+export function discoveryPool(data, categoryId = '') {
+  const ix = indexOf(data);
+  const pool = new Map();
+  for (const r of data.resources)
+    if (!categoryId || ix.placements.get(r.id).some(id => ix.cats.get(id).category_id === categoryId)) pool.set(r.id, r);
+  return [...pool.values()];
+}
+// Uniform pick that avoids repeating the previous result whenever there is an alternative.
+export function pickDiscovery(pool, previousId = '', random = Math.random) {
+  if (!pool.length) return null;
+  const choices = pool.length > 1 ? pool.filter(r => r.id !== previousId) : pool;
+  return choices[Math.min(choices.length - 1, Math.floor(random() * choices.length))];
+}
+
 export function sectionFor(data, r, category) {
   const ix = indexOf(data), ids = ix.placements.get(r.id);
   const primary = ix.cats.get(r.primary_placement);

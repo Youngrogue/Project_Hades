@@ -16,11 +16,15 @@ The Google Sheet is the live editor. The site keeps no copy anywhere except in m
 
 **Refresh timing:**
 
-- Each instance checks the Sheet when its last successful read is older than five minutes (`REFRESH_SECONDS`), started by an incoming request.
+- **Interval: six hours** (`REFRESH_SECONDS=21600`, the default; the variable still overrides it, minimum 60). It is a **per-instance, request-driven** interval, not a scheduled job: nothing runs on a timer.
+- A new instance (a cold start, a new deployment or a local restart) reads the Sheet on its first request, while serving the bundled catalogue.
+- After that, an instance reads the Sheet again only when a request arrives and its last **successful** read is more than six hours old. An idle site simply checks on its next visit.
+- A failed or invalid read doesn't reset that clock, so it is retried sooner: about once a minute while requests arrive.
 - The page never waits for the check: the check runs after the response, through `waitUntil` on Vercel.
 - Concurrent checks within an instance share one read.
 - A failing Sheet is retried at most about once a minute.
-- There is no cron and no shared coordination between instances, so two instances can briefly serve different versions for up to five minutes after an edit.
+- There is no cron and no shared coordination between instances. After a Sheet edit, a warm instance can keep serving its earlier read for up to six hours, while a newly started instance already shows the edit, so two visitors can briefly see different versions.
+- To publish an edit sooner, redeploy (new instances read the Sheet at once), or set a shorter `REFRESH_SECONDS` temporarily.
 
 Nothing is written to disk or to any storage service. The Blob adapter, its write budget and its conflict handling were removed on 27 September 2026 with that code path.
 

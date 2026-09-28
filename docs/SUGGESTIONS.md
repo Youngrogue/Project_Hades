@@ -8,7 +8,7 @@ Updated 27 September 2026. The website side is implemented and verified locally.
 2. Sora reviews them in Tally from time to time and picks the promising ones.
 3. Sora asks Claude or Codex, as an ordinary one-off task, to research that batch (prompt below).
 4. The agent returns ready-to-add rows. Sora adds them to the catalogue Sheet, or separately authorises an agent with edit access to do it.
-5. Rows marked **Published** appear on the site at its next Sheet check, within about five minutes. No deployment is needed.
+5. Rows marked **Published** appear on the site at its next Sheet check. That is at most six hours per running server instance (`REFRESH_SECONDS=21600`), and immediately on a fresh start or redeploy. No deployment is needed.
 
 The site only reads prepared catalogue data. It has:
 
@@ -20,7 +20,7 @@ A suggestion can never publish itself or change the Sheet.
 
 ## On the website
 
-- **Links:** two plain links, one in the collection toolbar (beside Find something unexpected) and one in the footer.
+- **Links:** two plain links, one in the collection toolbar (under the search bar) and one in the footer.
   - They work without JavaScript and open in a new tab with `rel="noopener noreferrer"`.
   - Screen readers hear "opens a form in a new tab".
   - They are 44px tall and show the standard focus ring.

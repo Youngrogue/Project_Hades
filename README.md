@@ -4,7 +4,7 @@ A one-page directory of useful websites, with subjects, sequential sections, sea
 
 [Edit the Google Sheet](https://docs.google.com/spreadsheets/d/1HsH-l2vAqHQU0X3Ca6b4tcGVqJXV83AwxTpVDJ7UUkA/edit). The Sheet is older than the local catalogue; see `../handoff/claude-enhancements/sheet-update-2026-09-27/` before connecting it.
 
-The local catalogue holds 760 records: **721 Published, 32 Archived (Turkish-market), 7 Draft**, in ten subjects and 56 sections. Cross-listings reuse the same resource ID, so a view never shows a duplicate.
+The local catalogue holds 762 records: **723 Published, 32 Archived (Turkish-market), 7 Draft**, in ten subjects and 56 sections. Cross-listings reuse the same resource ID, so a view never shows a duplicate.
 
 ## Run locally
 
@@ -30,7 +30,7 @@ Edit the Sheet (see its **How to edit** tab):
 - **Remove:** set the row to Archived; keep the row and its ID.
 - **Cross-list:** add a row in Additional placements.
 
-Once connected, the site checks the Sheet about every five minutes as visits arrive. No deployment is needed for content edits. An invalid edit or a Google outage leaves the last valid catalogue visible; a restart falls back to the bundled one. See [operations](docs/OPERATIONS.md).
+Once connected, each server instance reads the Sheet when it starts and then at most every six hours (`REFRESH_SECONDS=21600`), triggered by visits rather than a schedule. No deployment is needed for content edits. An invalid edit or a Google outage leaves the last valid catalogue visible; a restart falls back to the bundled one. See [operations](docs/OPERATIONS.md).
 
 Suggestions arrive through a Tally form and are reviewed there by hand. See [suggestions](docs/SUGGESTIONS.md).
 

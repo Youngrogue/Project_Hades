@@ -1,4 +1,4 @@
-import {setIconHints, viewModel, viewHeadHtml, resultsHtml, railHtml, subjectStripHtml, previewHtml, normalizeState, stateFromSearch, searchFromState, historyMode, stateKey, selectResources, indexOf} from './shared.mjs';
+import {setIconHints, discoveryPool, pickDiscovery, viewModel, viewHeadHtml, resultsHtml, railHtml, subjectStripHtml, previewHtml, normalizeState, stateFromSearch, searchFromState, historyMode, stateKey, indexOf} from './shared.mjs';
 
 let data = JSON.parse(document.querySelector('#catalogue-data').textContent);
 try { setIconHints(JSON.parse(document.querySelector('#icon-hints')?.textContent || '{}')); } catch { /* favicons only */ }
@@ -199,40 +199,52 @@ document.addEventListener('keydown', event => {
   search.select();
 });
 
-/* Preview: anchored beside the row on wide screens, a bottom sheet on phones.
-   Position is recomputed whenever the viewport changes while it is open, so resizing a desktop popup down to phone
-   width turns it into the bottom sheet instead of leaving it at stale coordinates outside the screen. */
+/* Preview: anchored beside its row or button on wide screens, a bottom sheet on phones.
+   The popup's outer box always fits the visible viewport: its height is capped to the viewport (the content scrolls
+   inside it, below a fixed close button), and its top is clamped using the rendered height. Placement is recomputed
+   whenever the viewport or the popup's own size changes (resizing, zoom, fonts or images settling), so a popup opened
+   near the bottom of a short window, or resized from desktop to phone width while open, never runs off screen.
+   An anchor that has scrolled out of view leaves the popup centred instead. */
 const phone = matchMedia('(max-width: 700px)');
+const previewBody = $('#preview-content');
 let previewAnchor = null, placeFrame = 0;
+const viewportHeight = () => Math.min(innerHeight, window.visualViewport?.height || innerHeight);
 function placePreview() {
   delete preview.dataset.anchored;
-  preview.style.left = preview.style.top = '';
-  if (phone.matches || !previewAnchor?.isConnected) return;
-  const rect = previewAnchor.getBoundingClientRect(), width = preview.offsetWidth, height = preview.offsetHeight;
+  preview.style.left = preview.style.top = preview.style.maxHeight = '';
+  if (phone.matches) return;
+  const viewH = viewportHeight(), margin = 16;
+  preview.style.maxHeight = `${Math.max(0, viewH - margin * 2)}px`;
+  if (!previewAnchor?.isConnected) return;
+  const rect = previewAnchor.getBoundingClientRect();
+  if (!rect.width || rect.bottom < 0 || rect.top > viewH) return;
+  const width = preview.offsetWidth, height = preview.offsetHeight;
   const roomRight = innerWidth - rect.right - 24;
-  const left = roomRight >= width ? rect.right + 12 : Math.min(Math.max(16, rect.left), innerWidth - width - 16);
+  const left = roomRight >= width ? rect.right + 12 : Math.min(Math.max(margin, rect.left), innerWidth - width - margin);
   const top = roomRight >= width ? rect.top - 12 : rect.bottom + 8;
   preview.dataset.anchored = '';
-  preview.style.left = `${Math.round(Math.max(16, left))}px`;
-  preview.style.top = `${Math.round(Math.max(16, Math.min(top, innerHeight - height - 16)))}px`;
+  preview.style.left = `${Math.round(Math.max(margin, left))}px`;
+  preview.style.top = `${Math.round(Math.max(margin, Math.min(top, viewH - height - margin)))}px`;
+}
+function schedulePlacement() {
+  if (!preview.open || placeFrame) return;
+  placeFrame = requestAnimationFrame(() => { placeFrame = 0; if (preview.open) placePreview(); });
 }
 function openPreview(id, anchor) {
   const resource = indexOf(data).byId.get(id);
   if (!resource) return;
   opener = anchor || document.activeElement;
   previewAnchor = anchor || null;
-  $('#preview-content').innerHTML = previewHtml(data, resource);
-  enhance($('#preview-content'));
-  delete preview.dataset.anchored;
-  preview.style.left = preview.style.top = '';
+  previewBody.innerHTML = previewHtml(data, resource);
+  enhance(previewBody);
   if (!preview.open) preview.showModal();
   placePreview();
+  previewBody.scrollTop = 0;
   $('#close-preview').focus();
 }
-addEventListener('resize', () => {
-  if (!preview.open || placeFrame) return;
-  placeFrame = requestAnimationFrame(() => { placeFrame = 0; if (preview.open) placePreview(); });
-});
+addEventListener('resize', schedulePlacement);
+window.visualViewport?.addEventListener('resize', schedulePlacement);
+new ResizeObserver(schedulePlacement).observe(preview);
 phone.addEventListener('change', () => { if (preview.open) placePreview(); });
 preview.addEventListener('close', () => { if (opener?.isConnected) opener.focus({preventScroll: true}); opener = null; previewAnchor = null; });
 $('#close-preview').addEventListener('click', () => preview.close());
@@ -252,24 +264,21 @@ for (const id of ['#about-button', '#footer-about']) $(id).addEventListener('cli
 });
 about.addEventListener('close', () => { aboutOpener?.focus({preventScroll: true}); aboutOpener = null; });
 
-/* Find something unexpected: a uniformly random Published resource from the current view, never the one just shown */
+/* Find something unexpected: a uniformly random Published resource from the chosen discovery category (Everything by
+   default). Independent of the search and browsing filters, and never the one just shown when there is an alternative. */
 let lastSurprise = '';
-const surprisePool = () => selectResources(data, state);
+const discoverButton = $('#discover-button'), discoverCategory = $('#discover-category'), discoverNote = $('#discover-note');
 function updateSurprise() {
-  const empty = !surprisePool().length;
-  document.querySelectorAll('[data-surprise]').forEach(button => {
-    button.disabled = empty;
-    button.parentElement.querySelector('.surprise-note').hidden = !empty;
-  });
+  const empty = !discoveryPool(data, discoverCategory.value).length;
+  discoverButton.disabled = empty;
+  discoverNote.textContent = empty ? 'Nothing listed in this category yet' : '';
 }
-document.addEventListener('click', event => {
-  const button = event.target.closest('[data-surprise]');
-  if (!button || button.disabled) return;
-  const pool = surprisePool();
-  if (!pool.length) return;
-  const choices = pool.length > 1 ? pool.filter(r => r.id !== lastSurprise) : pool;
-  lastSurprise = choices[Math.floor(Math.random() * choices.length)].id;
-  openPreview(lastSurprise, button);
+discoverCategory.addEventListener('change', updateSurprise);
+discoverButton.addEventListener('click', () => {
+  const pick = pickDiscovery(discoveryPool(data, discoverCategory.value), lastSurprise);
+  if (!pick) return updateSurprise();
+  lastSurprise = pick.id;
+  openPreview(pick.id, discoverButton);
 });
 
 /* Theme: dark by default; an explicit choice is saved and restored before paint by theme.js */

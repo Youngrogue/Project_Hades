@@ -150,3 +150,73 @@ test('resource rows carry no subject-letter badges; the popup keeps full cross-l
   assert.ok(popup.includes('<dt>Also in</dt>'));
   for (const c of [home, ...also]) assert.ok(popup.includes(`<span class="trail-subject">${c.category.replaceAll('&', '&amp;')}</span>`) && popup.includes(c.subcategory.replaceAll('&', '&amp;')), c.id);
 });
+
+test('discovery: Everything draws from every Published resource, independent of search and browsing filters', async () => {
+  const {discoveryPool} = await import('../public/shared.mjs');
+  const everything = discoveryPool(data, '');
+  assert.equal(everything.length, data.resources.length);
+  assert.equal(new Set(everything.map(r => r.id)).size, everything.length);
+  // The pool takes no browsing state at all; a filtered view is much smaller.
+  assert.ok(selectResources(data, {category: 'coding', q: 'codex'}).length < everything.length);
+  // The control sits outside the search form, so changing it cannot submit or alter the collection filters.
+  const html = pageHtml(data, {state: {category: 'coding', q: 'agent'}});
+  const discover = html.slice(html.indexOf('<div class="discover"'), html.indexOf('</div>', html.indexOf('<div class="discover"')));
+  assert.ok(html.indexOf('<div class="discover"') < html.indexOf('<form class="search"'), 'above the search bar');
+  assert.ok(!html.slice(html.indexOf('<form class="search"'), html.indexOf('</form>')).includes('discover-category'));
+  assert.equal((html.match(/data-surprise/g) || []).length, 1, 'one control: no rail or toolbar copies');
+  assert.ok(!html.slice(html.indexOf('<nav class="rail"'), html.indexOf('</nav>', html.indexOf('<nav class="rail"'))).includes('unexpected'));
+  assert.match(discover, /<label class="sr-only" for="discover-category">Discovery category<\/label>/);
+  assert.match(discover, /<option value="">Everything<\/option>/);
+  assert.deepEqual([...discover.matchAll(/<option value="([^"]+)">/g)].map(m => m[1]), categoryGroups(data).map(g => g.id));
+  assert.ok(discover.includes('Find something unexpected') && discover.includes('#i-shuffle'));
+});
+
+test('discovery by category includes cross-listed tools once, and picks avoid repeats and handle tiny pools', async () => {
+  const {discoveryPool, pickDiscovery} = await import('../public/shared.mjs');
+  const byCat = id => data.categories.find(c => c.id === id).category_id;
+  // Design Engineer Tools lives in Design and is cross-listed in Internet & Digital Utilities.
+  assert.ok(discoveryPool(data, 'utilities').some(r => r.id === 'h-e27f7d4b1e'));
+  assert.ok(discoveryPool(data, 'design').some(r => r.id === 'h-e27f7d4b1e'));
+  for (const g of categoryGroups(data)) {
+    const pool = discoveryPool(data, g.id);
+    assert.equal(new Set(pool.map(r => r.id)).size, pool.length, `${g.id}: each resource once`);
+    const expected = data.resources.filter(r => byCat(r.primary_placement) === g.id || data.placements.some(p => p.resource_id === r.id && byCat(p.placement_id) === g.id));
+    assert.equal(pool.length, expected.length, g.id);
+  }
+  // A resource with two placements in the same subject is still one entry.
+  const doubled = structuredClone(data), r = doubled.resources.find(x => x.primary_placement === 'coding-2');
+  doubled.placements.push({resource_id: r.id, placement_id: 'coding-4'});
+  assert.equal(discoveryPool(doubled, 'coding').filter(x => x.id === r.id).length, 1);
+  // Never the previous pick when there is an alternative; uniform choice over the rest.
+  const pool = discoveryPool(data, 'careers');
+  for (let i = 0; i < 50; i++) assert.notEqual(pickDiscovery(pool, pool[0].id).id, pool[0].id);
+  assert.equal(pickDiscovery(pool, '', () => 0).id, pool[0].id);
+  assert.equal(pickDiscovery(pool, '', () => 0.999999).id, pool.at(-1).id);
+  // Single-resource and empty categories.
+  assert.equal(pickDiscovery([pool[0]], pool[0].id).id, pool[0].id, 'a single resource can repeat');
+  assert.equal(pickDiscovery([], ''), null);
+  const empty = structuredClone(data);
+  empty.categories.push({id: 'new-1', category_id: 'new', category: 'New subject', subcategory: 'Soon', category_order: 11, sort_order: 1});
+  assert.deepEqual(discoveryPool(empty, 'new'), []);
+  assert.ok(pageHtml(empty).includes('<option value="new">New subject</option>'));
+});
+
+test('owner additions of 28 September: verified, deduplicated and placed in existing categories', () => {
+  const expected = {
+    'h-e27f7d4b1e': ['Design Engineer Tools', 'https://designengineer.tools/', 'design-1', ['utilities-5']],
+    'h-4fd07c04a0': ['Early.tools', 'https://www.early.tools/', 'utilities-5', []],
+    'h-b26048c599': ['Lumosity', 'https://www.lumosity.com/en/', 'explore-1', []],
+    'h-599401c077': ['Duolingo', 'https://www.duolingo.com/', 'learning-3', []],
+    'h-c985249d6a': ['Mastra', 'https://mastra.ai/', 'coding-4', []],
+  };
+  for (const [id, [name, url, home, extra]] of Object.entries(expected)) {
+    const r = data.resources.find(x => x.id === id);
+    assert.ok(r, name);
+    assert.deepEqual([r.name, r.url, r.primary_placement], [name, url, home]);
+    assert.deepEqual(data.placements.filter(p => p.resource_id === id).map(p => p.placement_id), extra);
+    assert.ok(r.description && r.best_for && !('suggested_by' in r), name);
+    const host = new URL(url).hostname.replace(/^www\./, '');
+    assert.equal(data.resources.filter(x => new URL(x.url).hostname.replace(/^www\./, '') === host).length, 1, `${host} once`);
+    assert.equal(seed.resources.filter(x => x.name.toLowerCase() === name.toLowerCase()).length, 1, `${name} once`);
+  }
+});

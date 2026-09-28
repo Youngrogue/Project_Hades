@@ -16,7 +16,7 @@ Unchanged:
 
 - `/healthz` → `available: true`, and `source: "sheet"` with `sheetOk: true` once the Sheet is connected.
 - Home, assets and `/api/catalogue` respond. There are no Draft or Archived resources or editorial columns in the HTML or API.
-- A small Sheet edit appears within about five minutes of the next visit, without a deployment. Restore it afterwards.
+- A small Sheet edit appears without a code deployment. New instances show it at once; warm instances within six hours (`REFRESH_SECONDS=21600`). To test quickly, use a Preview with `REFRESH_SECONDS=60`, or redeploy. Restore the edit afterwards.
 - A malformed Published row leaves the last valid catalogue in place (`sheetOk: false`). Correct it afterwards.
 - Check desktop and mobile, search, previews, keyboard focus, direct links, and robots, canonical and sitemap at the custom domain.
 - Confirm a correction/contact route before marking Product clarity and discovery verified.
