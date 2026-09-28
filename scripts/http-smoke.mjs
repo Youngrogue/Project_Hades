@@ -20,20 +20,25 @@ for (const asset of ['/app.mjs', '/styles.css', '/shared.mjs', '/theme.js', '/ta
 for (const [asset, type] of [['/favicon.ico', 'image/x-icon'], ['/favicon.svg', 'image/svg+xml'], ['/apple-touch-icon.png', 'image/png'], ['/icons/icon-192.png', 'image/png'], ['/icons/icon-512.png', 'image/png'], ['/brand/hades-logo-light.svg', 'image/svg+xml']]) {
   const response = await fetch(base + asset);
   assert.equal(response.status, 200, asset);
-  assert.ok(response.headers.get('content-type').startsWith(type), `${asset} is ${type}`);
+  // Vercel's static hosting labels .ico as image/vnd.microsoft.icon; the local server uses image/x-icon. Both are valid.
+  const accepted = type === 'image/x-icon' ? [type, 'image/vnd.microsoft.icon'] : [type];
+  assert.ok(accepted.some(t => response.headers.get('content-type').startsWith(t)), `${asset} is ${type}`);
 }
 assert.ok(html.includes('aria-label="Hades home"') && html.includes('About Hades'), 'brand lockup and About Hades');
 assert.ok(html.includes('href="https://tally.so/r/9qVrz1"'), 'Suggest a tool link');
 // Mutable assets revalidate (ETag + no-cache) so a returning browser never mixes releases; fonts stay immutable.
 for (const asset of ['/app.mjs', '/shared.mjs', '/taxonomy-icons.mjs', '/styles.css', '/favicon.ico']) {
   const first = await fetch(base + asset);
-  assert.equal(first.headers.get('cache-control'), 'no-cache', asset);
+  // Local server: no-cache. Vercel static files (vercel.json): public, max-age=0, must-revalidate. Both force revalidation.
+  assert.ok(['no-cache', 'public, max-age=0, must-revalidate'].includes(first.headers.get('cache-control')), `${asset} revalidates`);
   assert.equal((await fetch(base + asset, {headers: {'If-None-Match': first.headers.get('etag')}})).status, 304, asset);
 }
 assert.match((await fetch(base + '/fonts/overpass-latin-wght.woff2')).headers.get('cache-control'), /immutable/);
 for (const privatePath of ['/.env', '/data/catalogue.json', '/data/fallback-catalogue.json', '/data/migration-provenance.json', '/server.mjs', '/lib/store.mjs', '/package.json'])
   assert.equal((await fetch(base + privatePath)).status, 404, privatePath);
-assert.equal((await fetch(base + '/api/catalogue', {method: 'POST', body: '{}'})).status, 405);
+// Writes are refused: 405 from the app locally; Vercel's router answers 404 before the function. Both mean no write.
+const refused = status => [404, 405].includes(status);
+assert.ok(refused((await fetch(base + '/api/catalogue', {method: 'POST', body: '{}'})).status), 'POST refused');
 const health = await (await fetch(base + '/healthz')).json();
 assert.equal(health.available, true);
 assert.ok(['sheet', 'bundled'].includes(health.source));
@@ -41,6 +46,6 @@ assert.ok(['sheet', 'bundled'].includes(health.source));
 // Removed features: no likes, presence or visitor-count endpoints, script or markup.
 for (const removed of ['/api/engagement', '/api/presence', '/api/audience?window=24h', '/api/resources/h-f97516a261/like', '/engagement.mjs'])
   assert.equal((await fetch(base + removed)).status, 404, removed);
-assert.equal((await fetch(base + '/api/resources/h-f97516a261/like', {method: 'PUT', body: '{}'})).status, 405);
+assert.ok(refused((await fetch(base + '/api/resources/h-f97516a261/like', {method: 'PUT', body: '{}'})).status), 'PUT refused');
 for (const text of ['data-like', 'Online now', 'visitor-counts', 'data-engagement']) assert.ok(!html.includes(text), `no ${text}`);
 console.log(`HTTP checks passed on ${base}: pages, ${data.resources.length} public resources (${health.source} catalogue), assets, private paths, methods, health, removed endpoints.`);

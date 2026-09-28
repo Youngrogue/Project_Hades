@@ -169,6 +169,11 @@ test('discovery: Everything draws from every Published resource, independent of 
   assert.match(discover, /<option value="">Everything<\/option>/);
   assert.deepEqual([...discover.matchAll(/<option value="([^"]+)">/g)].map(m => m[1]), categoryGroups(data).map(g => g.id));
   assert.ok(discover.includes('Find something unexpected') && discover.includes('#i-shuffle'));
+  // Every breakpoint: the only rule that hides the control is the no-JavaScript one, and no media query moves or hides it.
+  const css = (await fs.readFile(new URL('../public/styles.css', import.meta.url), 'utf8')).replace(/\/\*[\s\S]*?\*\//g, '');
+  const hiding = [...css.matchAll(/([^{}]*\.discover[^{}]*)\{[^}]*display:\s*none/g)].map(m => m[1].trim());
+  assert.deepEqual(hiding, ['html:not(.js) .discover']);
+  assert.ok(!/\.discover(?![-\w])[^{}]*\{[^}]*(?:[;{\s]order\s*:|position\s*:\s*(?:absolute|fixed))/.test(css), 'not reordered or repositioned');
 });
 
 test('discovery by category includes cross-listed tools once, and picks avoid repeats and handle tiny pools', async () => {

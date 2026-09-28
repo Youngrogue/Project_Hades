@@ -28,6 +28,11 @@ test('About Hades uses the approved three paragraphs verbatim, first, with notes
   assert.equal((html.match(/aria-haspopup="dialog">About Hades<\/button>/g) || []).length, 2, 'header and footer entry points');
   assert.ok(html.includes('id="about-button"') && html.includes('id="footer-about"'), 'existing IDs and handlers kept');
   for (const obsolete of ['Likes', 'Online now', 'visitor', 'analytics', 'cookie']) assert.ok(!dialog.includes(obsolete), `no ${obsolete} explanation`);
+  // Owner request 28 Sep 2026: no disclaimer in About (the shorter footer note stays); nothing replaces it.
+  assert.ok(!dialog.includes('Inclusion is a discovery aid') && !dialog.includes('personally tested'), 'About has no testing disclaimer');
+  const notes = dialog.slice(dialog.indexOf('<div class="about-notes">'));
+  assert.deepEqual([...notes.matchAll(/<p>([^<]*)<\/p>/g)].map(m => m[1]), ['Each subject is split into sections in a fixed order. A website listed in more than one subject appears once per view; select it to see every subject and section it belongs to.']);
+  assert.ok(html.includes('<p class="footer-note">Inclusion is a discovery aid, not a claim that every service has been personally tested. Access and features can change.</p>'), 'footer note unchanged');
 });
 
 test('the header lockup is one named home link with decorative vector artwork and no font request', () => {
