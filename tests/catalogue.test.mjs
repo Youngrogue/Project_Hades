@@ -10,13 +10,13 @@ const published=publicCatalogue(seed);
 
 test('all source entries are reconciled and publication excludes drafts',async()=>{
  const p=JSON.parse(await fs.readFile(new URL('../data/migration-provenance.json',import.meta.url),'utf8'));
- // 728 earlier sources + 44 Bolaji references + Details + 5 owner additions (2026-09-28); one discontinued source is excluded.
- assert.equal(p.source_count,778);assert.equal(p.entries.length,778);
- assert.equal(p.resource_count,762);assert.equal(new Set(p.entries.filter(e=>e.action!=='excluded').map(e=>e.resource_id)).size,762);
- assert.deepEqual(p.entries.filter(e=>e.source_number).map(e=>e.source_number),Array.from({length:745},(_,i)=>i+1));
- assert.equal(seed.resources.length,762);
+ // Original sources and retained owner intakes, including 43 additions on 2026-10-02; one discontinued source is excluded.
+ assert.equal(p.source_count,826);assert.equal(p.entries.length,826);
+ assert.equal(p.resource_count,810);assert.equal(new Set(p.entries.filter(e=>e.action!=='excluded').map(e=>e.resource_id)).size,810);
+ assert.deepEqual(p.entries.filter(e=>e.source_number).map(e=>e.source_number),Array.from({length:793},(_,i)=>i+1));
+ assert.equal(seed.resources.length,810);
  assert.equal(seed.resources.filter(r=>r.status==='Archived').length,32);assert.equal(seed.resources.filter(r=>r.status==='Draft').length,7);
- assert.equal(published.resources.length,723);
+ assert.equal(published.resources.length,771);
  assert.ok(!published.resources.some(r=>r.name==='Lucida'));
  assert.ok(!JSON.stringify(published).includes('editorial_notes'));
  assert.ok(!JSON.stringify(published).includes('source_entries'));
@@ -57,7 +57,7 @@ test('HTML escapes untrusted sheet text and includes direct links without JavaSc
  assert.ok(html.includes('&lt;/script&gt;&lt;script&gt;alert(1)&lt;/script&gt;'));
  // Without JavaScript every published resource is reachable as a direct link on its subject pages.
  const linked=new Set(categoryGroups(d).flatMap(g=>[...pageHtml(d,{state:{category:g.id}}).matchAll(/data-preview="([^"]+)"/g)].map(m=>m[1])));
- assert.equal(linked.size,723);
+ assert.equal(linked.size,771);
  assert.ok(pageHtml(d,{state:{category:'coding'}}).includes('href="https://openai.com/codex/" target="_blank" rel="noopener noreferrer"'));
  assert.ok(!html.includes('id="cost"'));assert.ok(!html.includes('id="audience"'));
  assert.ok(html.includes('noindex,nofollow'));
@@ -100,7 +100,7 @@ test('optional "Suggested by" credit: backwards compatible, validated, escaped a
   assert.throws(()=>catalogueFromSheet(sheet([...base,'Suggested by'],[...row,bad])),/Suggested by/,bad);
  const d=structuredClone(published);d.resources[0].suggested_by='O\'Brien & "Co"';
  assert.ok(previewHtml(d,d.resources[0]).includes('Suggested by O&#39;Brien &amp; &quot;Co&quot;'),'rendered as escaped plain text');
- assert.ok(published.resources.every(r=>!('suggested_by' in r)),'the seed invents no credits');
+ assert.deepEqual(published.resources.filter(r=>r.suggested_by).map(r=>[r.id,r.suggested_by]), [['h-jiro-20260928','Owner'],['h-loadmore-20260928','Owner'],['h-postsdesign-20260928','Owner']], 'only existing Sheet credits are preserved');
 });
 
 test('"Suggested by" appears only in the tool popup, after the description and before Visit website',async()=>{

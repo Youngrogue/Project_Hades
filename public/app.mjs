@@ -181,6 +181,18 @@ window.addEventListener('popstate', event => {
   if (preview.open) preview.close();
   const vm = render();
   announce(vm);
+  // In-page help and return links also create history entries. Honour their
+  // target instead of restoring the previous collection scroll position.
+  const anchorId = location.hash.slice(1);
+  const anchor = ['faq', 'content', 'page-title'].includes(anchorId) && document.getElementById(anchorId);
+  if (anchor) {
+    anchor.scrollIntoView({block: 'start', behavior: 'instant'});
+    anchor.focus({preventScroll: true});
+    restoring = false;
+    lastY = scrollY;
+    lastFocus = focusId(anchor);
+    return;
+  }
   const saved = positions[currentKey] || {y: 0, focus: ''};
   scrollTo({top: saved.y, behavior: 'instant'});
   const target = (saved.focus && findFocus(saved.focus)) || $('#view-title');
@@ -315,6 +327,6 @@ window.addEventListener('focus', async () => {
 });
 
 history.replaceState({key: currentKey}, '');
-if (positions[currentKey]) requestAnimationFrame(() => scrollTo({top: positions[currentKey].y, behavior: 'instant'}));
+if (positions[currentKey] && !location.hash) requestAnimationFrame(() => scrollTo({top: positions[currentKey].y, behavior: 'instant'}));
 desktop.addEventListener('change', revealActiveChips);
 render();
