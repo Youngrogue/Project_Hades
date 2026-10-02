@@ -1,5 +1,11 @@
 # Project kickoff and launch status
 
+## Latest implementation — 2 October 2026
+
+**Product clarity and discovery: implemented locally; owner Sora, implementation Codex.** The shuffle control is now a filled button with explicit random-pick help, and a six-question FAQ explains browsing, search, previews, random discovery and suggestions. The history handler respects FAQ and return anchors. Desktop/mobile, keyboard and FAQ Back/Forward checks completed. Validation: 43/43 tests, local HTTP smoke check and git diff --check pass. Next action: owner reviews http://127.0.0.1:4319, then release through the existing GitHub workflow; no commit, push or deployment was made here.
+
+**Catalogue:** live Sheet and local fallback reconciled at 771 published resources, 56 subcategories and 114 public cross-listings. Includes the requested career/freelance, inspiration, marketing, productivity and SpotiDownloader additions; duplicate entries retained once, HireBrain excluded, and the three missing tools restored with owner approval. Native Sheet values/validation read back; public catalogues match exactly. Details and sources: [update report](docs/DISCOVERY-FAQ-CATALOGUE-2026-10-02.md).
+
 ## Latest owner scope — overrides earlier engagement requirements
 
 Sora approved complete removal of likes, Online now, public visitor counts, social-sharing extras and Blob. **Status: implemented locally on 27 September 2026** (owner Claude). The removals were complete: controls, copy, APIs, polling, identity, storage, configuration and dependencies. The site now serves a bundled public catalogue at start-up and keeps the latest valid Sheet read in memory (docs/OPERATIONS.md). Research stays an occasional manual agent task (docs/SUGGESTIONS.md), and attribution appears only in the tool popup. Remaining: owner setup and live checks. Scope: [the consolidated continuation](../handoff/claude-enhancements/LATEST-CONSOLIDATED-PROMPT.md).

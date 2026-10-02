@@ -13,7 +13,7 @@ assert.ok(coding.indexOf('h-f97516a261') < coding.indexOf('h-bd01975189'), 'Code
 
 const api = await fetch(base + '/api/catalogue'); assert.equal(api.status, 200);
 const payload = await api.text(), data = JSON.parse(payload);
-assert.equal(data.resources.length, 723);
+assert.equal(data.resources.length, 771);
 for (const privateField of ['editorial_notes', 'source_entries', 'alternate_urls', 'Needs review']) assert.ok(!payload.includes(privateField));
 for (const asset of ['/app.mjs', '/styles.css', '/shared.mjs', '/theme.js', '/taxonomy-icons.mjs', '/favicon.svg', '/fonts/overpass-latin-wght.woff2', '/fonts/overpass-mono-latin-wght.woff2'])
   assert.equal((await fetch(base + asset)).status, 200, asset);

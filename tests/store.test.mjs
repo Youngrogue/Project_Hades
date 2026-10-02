@@ -36,7 +36,7 @@ test('the bundled fallback is the validated public catalogue of the current seed
   const {generated_at, ...data} = fallbackFile;
   assert.match(generated_at, /^\d{4}-\d{2}-\d{2}$/);
   assert.deepEqual(data, publicCatalogue(seed), 'run `npm run build:fallback` after editing data/catalogue.json');
-  assert.equal(data.resources.length, 723);
+  assert.equal(data.resources.length, 771);
   const allowed = ['id', 'name', 'url', 'description', 'primary_placement', 'best_for', 'logo_url', 'cost', 'audience', 'level', 'tags', 'sort_order', 'suggested_by'];
   for (const r of data.resources) for (const key of Object.keys(r)) assert.ok(allowed.includes(key), `unexpected public field ${key}`);
   const text = JSON.stringify(fallbackFile);
@@ -60,7 +60,7 @@ test('start-up serves the bundled catalogue at once while the Sheet is still bei
   const pending = [];
   prepare(p => pending.push(p));
   assert.equal(pending.length, 1, 'the first request starts a Sheet check');
-  assert.equal(store.getPublic().resources.length, 723, 'without waiting for it');
+  assert.equal(store.getPublic().resources.length, 771, 'without waiting for it');
   assert.equal(store.getPublic().meta.source, 'bundled');
   assert.equal(store.getPublic().meta.bundled_at, fallbackFile.generated_at);
   release(edited('From the Sheet')); assert.equal(await pending[0], true);
@@ -134,7 +134,7 @@ test('refreshes coalesce, follow the six-hour default interval and retry a faili
   clock += 31e3; await tick(); assert.equal(reads, 5, 'a failed read is retried after about a minute, not six hours');
   fail = false; clock += 61e3; await tick(); assert.equal(reads, 6);
   clock += 2 * HOUR; await tick(); assert.equal(reads, 6, 'back on the six-hour interval after recovery');
-  assert.equal(store.getPublic().resources.length, 723);
+  assert.equal(store.getPublic().resources.length, 771);
 });
 
 test('REFRESH_SECONDS: six hours by default, overridable, at least a minute', () => {
@@ -158,7 +158,7 @@ test('no Google connection: the bundled library is served with a private diagnos
     assert.match(log.errors.join('\n'), /GOOGLE_SHEET_ID is not set/);
     const page = await request(missing.handler, '/', {host: 'tools.soralives.xyz'});
     assert.equal(page.status, 200);
-    assert.ok(page.body.includes('Codex') && page.body.includes('Search 723 websites'));
+    assert.ok(page.body.includes('Codex') && page.body.includes('Search 771 websites'));
     // A broken key surfaces as a failed refresh with a generic message that never quotes the key.
     const badKey = await createRuntime({root: temp, env: {GOOGLE_SHEET_ID: 'sheet-id', GOOGLE_SERVICE_ACCOUNT_JSON: '{"private_key": "SECRET-KEY-MATERIAL'}, log});
     assert.equal(await badKey.store.refresh(), false);

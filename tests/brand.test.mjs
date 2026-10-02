@@ -100,11 +100,11 @@ test('Version 01 identity: Gelasio italic h. icon and hades. wordmark, identical
   assert.ok(String(await asset('brand/Gelasio-OFL.txt')).includes('SIL OPEN FONT LICENSE'), 'font licence shipped');
 });
 
-test('Suggest a tool: plain new-tab links to the configured Tally form in the toolbar and footer', async () => {
+test('Suggest a tool: plain new-tab links to the configured Tally form in the toolbar, FAQ and footer', async () => {
   const {SUGGEST_URL} = await import('../lib/site-config.mjs');
   assert.equal(SUGGEST_URL, 'https://tally.so/r/9qVrz1');
   const links = [...html.matchAll(/<a class="([^"]*)" href="https:\/\/tally\.so\/r\/9qVrz1" target="_blank" rel="noopener noreferrer">Suggest a tool[\s\S]*?<\/a>/g)];
-  assert.deepEqual(links.map(m => m[1]), ['text-button suggest-link', 'text-link suggest-footer']);
+  assert.deepEqual(links.map(m => m[1]), ['text-button suggest-link', 'text-link', 'text-link suggest-footer']);
   for (const [link] of links) assert.ok(link.includes('<span class="sr-only"> (opens a form in a new tab)</span>'));
   assert.ok(!/tally\.so\/widgets|embed\.js|<iframe/.test(html), 'no embed script, iframe or modal form');
   const page = String(await fs.readFile(new URL('../lib/page.mjs', import.meta.url)));
